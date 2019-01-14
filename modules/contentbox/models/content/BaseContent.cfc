@@ -1,10 +1,10 @@
 ﻿/**
-* ContentBox - A Modular Content Platform
-* Copyright since 2012 by Ortus Solutions, Corp
-* www.ortussolutions.com/products/contentbox
-* ---
-* A mapped super class used for contentbox content: entries and pages
-*/
+ * ContentBox - A Modular Content Platform
+ * Copyright since 2012 by Ortus Solutions, Corp
+ * www.ortussolutions.com/products/contentbox
+ * ---
+ * A mapped super class used for contentbox content: entries and pages
+ */
 component 	persistent="true"
 			entityname="cbContent"
 			table="cb_content"
@@ -30,7 +30,7 @@ component 	persistent="true"
 	**							NON PERSISTED PROPERTIES
 	********************************************************************* */
 
-	property 	name="renderedContent" persistent="false";
+	property 	name="renderedContent" persistent="false" default="";
 
 	/* *********************************************************************
 	**							STUPID PROPERTIES DUE TO ACF BUG
@@ -391,6 +391,7 @@ component 	persistent="true"
 		variables.markup 					= "HTML";
 		variables.contentType 				= "";
 		variables.showInSearch				= true;
+		variables.renderedContent 			= "";
 
 		super.init();
 
@@ -1084,20 +1085,21 @@ component 	persistent="true"
 		setPublishedDate( now() );
 
 		// Base Content Properties
-		HTMLKeywords			= arguments.original.getHTMLKeywords();
-		HTMLDescription			= arguments.original.getHTMLDescription();
-		HTMLTitle 				= arguments.original.getHTMLTitle();
-		cache 					= arguments.original.getCache();
-		cacheLayout 			= arguments.original.getCacheLayout();
-		cacheTimeout 			= arguments.original.getCacheTimeout();
-		cacheLastAccessTimeout 	= arguments.original.getCacheLastAccessTimeout();
-		showInSearch 			= arguments.original.getShowInSearch();
-		featuredImage 			= arguments.original.getFeaturedImage();
-		featuredImageURL		= arguments.original.getFeaturedImageURL();
+		variables.HTMLKeywords			= arguments.original.getHTMLKeywords();
+		variables.HTMLDescription		= arguments.original.getHTMLDescription();
+		variables.HTMLTitle 			= arguments.original.getHTMLTitle();
+		variables.markup 				= arguments.original.getMarkup();
+		variables.cache 				= arguments.original.getCache();
+		variables.cacheLayout 			= arguments.original.getCacheLayout();
+		variables.cacheTimeout 			= arguments.original.getCacheTimeout();
+		variables.cacheLastAccessTimeout= arguments.original.getCacheLastAccessTimeout();
+		variables.showInSearch 			= arguments.original.getShowInSearch();
+		variables.featuredImage 		= arguments.original.getFeaturedImage();
+		variables.featuredImageURL		= arguments.original.getFeaturedImageURL();
 		// reset hits
-		numberOfHits = 0;
+		variables.numberOfHits = 0;
 		// remove all comments
-		comments = [];
+		variables.comments = [];
 		// get latest content versioning
 		var latestContent = arguments.original.getActiveContent().getContent();
 		// Original slug updates on all content
@@ -1159,8 +1161,9 @@ component 	persistent="true"
 				addChild( newChild );
 			}
 		}
+
 		// evict original entity, just in case
-		contentService.evictEntity( arguments.original );
+		variables.contentService.evictEntity( arguments.original );
 
 		return this;
 	}
@@ -1307,15 +1310,17 @@ component 	persistent="true"
 			// Try to get content?
 			var cachedContent = cache.get( cacheKey );
 			// Verify it exists, if it does, return it
-			if( !isNull( cachedContent ) AND len( cachedContent ) ){ return cachedContent; }
+			if( !isNull( cachedContent ) AND len( cachedContent ) ){
+				return cachedContent;
+			}
 		}
 
 		// Check if we need to translate
-		if( NOT len( renderedContent ) ){
+		if( NOT len( variables.renderedContent ) ){
 			lock name="contentbox.contentrendering.#getContentID()#" type="exclusive" throwontimeout="true" timeout="10"{
-				if( NOT len( renderedContent ) ){
+				if( NOT len( variables.renderedContent ) ){
 					// save content
-					renderedContent = renderContentSilent();
+					variables.renderedContent = renderContentSilent();
 				}
 			}
 		}
@@ -1325,14 +1330,14 @@ component 	persistent="true"
 			// Store content in cache, of local timeouts are 0 then use global timeouts.
 			cache.set(
 				cacheKey,
-				renderedContent,
+				variables.renderedContent,
 				( getCacheTimeout() eq 0 ? settings.cb_content_cachingTimeout : getCacheTimeout() ),
 				( getCacheLastAccessTimeout() eq 0 ? settings.cb_content_cachingTimeoutIdle : getCacheLastAccessTimeout() )
 			);
 		}
 
 		// renturn translated content
-		return renderedContent;
+		return variables.renderedContent;
 	}
 
 	/**

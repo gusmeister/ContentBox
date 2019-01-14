@@ -98,7 +98,7 @@ component{
 		// traversal testing
 		if( NOT isTraversalSecure(prc, prc.fbCurrentRoot) ){
 			getModel( "messagebox@cbMessagebox" ).warn( $r( "messages.traversal@fb" ) );
-			setNextEvent(prc.xehFBBrowser);
+			relocate(prc.xehFBBrowser);
 		}
 
 		// Get storage preferences
@@ -544,10 +544,10 @@ component{
 			// LOAD Assets
 
 			//injector:css//
-			addAsset( "#prc.fbModRoot#/includes/css/f00ee02d.fb.min.css ");
+			addAsset( "#prc.fbModRoot#/includes/css/f00ee02d.fb.min.css");
 			//endinjector//
 			//injector:js//
-			addAsset( "#prc.fbModRoot#/includes/js/92610417.fb.min.js ");
+			addAsset( "#prc.fbModRoot#/includes/js/92610417.fb.min.js");
 			//endinjector//
 		}
 	}

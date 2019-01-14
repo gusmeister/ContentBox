@@ -37,7 +37,6 @@ component extends="baseHandler"{
 		prc.xehFlushRegistry 	= "#prc.cbAdminEntryPoint#.themes.rebuildRegistry";
 		prc.xehActivate			= "#prc.cbAdminEntryPoint#.themes.activate";
 		prc.xehPreview			= "#prc.cbEntryPoint#.__preview";
-		prc.xehForgeBox			= "#prc.cbAdminEntryPoint#.forgebox.index";
 		prc.xehSaveSettings 	= "#prc.cbAdminEntryPoint#.themes.saveSettings";
 
 		// Rescan if newly installed theme?
@@ -50,15 +49,9 @@ component extends="baseHandler"{
 		prc.activeTheme 	= themeService.getActiveTheme();
 		prc.themeService	= themeService;
 
-		// ForgeBox Entry URL
-		prc.forgeBoxEntryURL = getModuleSettings( "contentbox-admin" ).forgeBoxEntryURL;
-		// ForgeBox Stuff
-		prc.forgeBoxSlug 		= "contentbox-themes";
-		prc.forgeBoxInstallDir 	= "themes";
-		prc.forgeboxReturnURL 	= URLEncodedFormat( event.buildLink( linkto=prc.xehThemes, querystring="rescan=true##managePane" ) );
-
 		// Tab
 		prc.tabLookAndFeel_themes = true;
+
 		// view
 		event.setView( "themes/index" );
 	}
@@ -87,7 +80,7 @@ component extends="baseHandler"{
 		announceInterception( "cbadmin_postThemeSettingsSave", { name=rc.themeName } );
 
 		// Relocate
-		setNextEvent( event=prc.xehActiveTheme );
+		relocate( event=prc.xehActiveTheme );
 	}
 
 	/**
@@ -101,7 +94,7 @@ component extends="baseHandler"{
 		// messages
 		cbMessagebox.info( "#rc.themeName# Activated!" );
 		// Relocate
-		setNextEvent(prc.xehThemes);
+		relocate(prc.xehThemes);
 	}
 
 	/**
@@ -110,7 +103,7 @@ component extends="baseHandler"{
 	function rebuildRegistry( event, rc, prc ){
 		themeService.buildThemeRegistry();
 		cbMessagebox.info( "Themes re-scanned and registered!" );
-		setNextEvent( event=prc.xehThemes, queryString="##themesPane" );
+		relocate( event=prc.xehThemes, queryString="##themesPane" );
 	}
 
 	/**
@@ -123,7 +116,7 @@ component extends="baseHandler"{
 		else{
 			cbMessagebox.error( "Error removing theme, please check your logs for more information!" );
 		}
-		setNextEvent(event=prc.xehThemes, queryString="##themesPane" );
+		relocate(event=prc.xehThemes, queryString="##themesPane" );
 	}
 
 }

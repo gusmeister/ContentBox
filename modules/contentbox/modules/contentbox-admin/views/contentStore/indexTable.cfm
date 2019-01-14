@@ -3,7 +3,7 @@
 <cfif structKeyExists( rc, "parent" ) AND len( rc.parent )>
 <div class="breadcrumb">
   <a href="javascript:contentDrilldown()"><i class="fa fa-home fa-lg"></i></a>
-  #getModel( "PageBreadcrumbVisitor@contentbox-admin" ).visit( prc.oParent )#
+  #getModel( "PageBreadcrumbVisitor@cbadmin" ).visit( prc.oParent )#
 </div>
 </cfif>
 
@@ -71,10 +71,10 @@
 					<i class="fa fa-fighter-jet fa-lg textBlue" title="Content Publishes in the future (#content.getDisplayPublishedDate()#)"></i>
 					<span class="hidden">published in future</span>
 				<cfelseif content.isContentPublished()>
-					<i class="fa fa-circle-o fa-lg textGreen" title="Content Published!"></i>
+					<i class="fa fa-circle fa-lg textGreen" title="Content Published!"></i>
 					<span class="hidden">published</span>
 				<cfelse>
-					<i class="fa fa-circle-o fa-lg textRed" title="Content Draft!"></i>
+					<i class="fa fa-circle fa-lg textRed" title="Content Draft!"></i>
 					<span class="hidden">draft</span>
 				</cfif>
 			</td>
